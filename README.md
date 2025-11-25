@@ -1,11 +1,18 @@
 <hr/>
 
+Added support for M5Stack ATOM-Lite
+
+<img src="https://shop.m5stack.com/cdn/shop/products/3_2e4a5d8d-c739-405a-9494-431e2edec8ae_1200x1200.jpg?v=1655692121" width="30%">
+
+<hr/>
+
 ### Psst… skip the soldering.
 
 <a href="https://islandmagic.co/products/B-B-Link-Adapter-p629580960?utm_campaign=diy&utm_medium=web&utm_source=github">
               <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/99145778/4295809032" width="30%">
 </a>
-              <br/>
+
+<br/>
  
 ### 👉 <a href="https://islandmagic.co/products/B-B-Link-Adapter-p629580960?utm_campaign=diy&utm_medium=web&utm_source=github">Check out</a> the sleek ready-made version that plugs directly into USB-C!
 
