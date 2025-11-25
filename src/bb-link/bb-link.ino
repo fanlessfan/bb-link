@@ -13,15 +13,26 @@
 */
 
 #include <ArduinoLog.h>
-const char *logLevels[] = {"OFF", "FATAL", "ERROR", "WARNING", "INFO", "TRACE", "VERBOSE"};
+const char* logLevels[] = { "OFF", "FATAL", "ERROR", "WARNING", "INFO", "TRACE", "VERBOSE" };
 
 #include "Adapter.h"
-Adapter *adapter = nullptr;
+Adapter* adapter = nullptr;
 
-void setup()
-{
+// for Atom
+//#include <Adafruit_NeoPixel.h>
+
+//#define PIN       27  //定义NeoPixel的控制引脚
+//#define NUMPIXELS 1   //定义NeoPixel控制灯灯数量
+
+//Adafruit_NeoPixel pixels = Adafruit_NeoPixel(
+//    NUMPIXELS, PIN,
+//    NEO_GRB + NEO_KHZ800);  // set number of LEDs, pin number, LED type.
+// 设置灯的数量,控制引脚编号,灯灯类型
+
+
+void setup() {
   // Slow down to save power
-  setCpuFrequencyMhz(80); // 240, 160, 80
+  setCpuFrequencyMhz(80);  // 240, 160, 80
 
   Serial.begin(115200);
   delay(1000);
@@ -32,12 +43,15 @@ void setup()
 
   adapter = new Adapter();
 
+
   Serial.println("\n ___   ___     _    _      _");
   Serial.println("| _ ) | _ )   | |  (_)_ _ | |__");
   Serial.println("| _ \\_| _ \\_  | |__| | ' \\| / /");
   Serial.println("|___(_)___(_) |____|_|_||_|_\\_\\\n");
 
-  Serial.printf("Booting up %s v%d.%d.%d on %s v%d.%d\n\n", adapter->getAdapterName().c_str(), FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR, FIRMWARE_VERSION_PATCH, HARDWARE_BOARD == hardware_board_tinypico ? "TinyPICO" : "Pico32", HARDWARE_VERSION_MAJOR, HARDWARE_VERSION_MINOR);
+  Serial.printf("Booting up %s v%d.%d.%d on %s v%d.%d\n\n", adapter->getAdapterName().c_str(), FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR, FIRMWARE_VERSION_PATCH,
+                getHardwareName(),
+                HARDWARE_VERSION_MAJOR, HARDWARE_VERSION_MINOR);
 
   Serial.printf("Heap free: %d, usage: %d %%\n", ESP.getFreeHeap(), 100 - (ESP.getFreeHeap() * 100) / ESP.getHeapSize());
   // ESP.getFreeSketchSpace() returns the total sketch space
@@ -46,52 +60,51 @@ void setup()
   Serial.printf("Log level: %s\n", logLevels[Log.getLevel()]);
 
   adapter->init();
+
+  //M5.dis.drawpix(0, 0x00aa00);
+  //Serial.println("drawpix");
+  //delay(1000);
 }
 
-void loop()
-{
+void loop() {
   adapter->perform();
 }
 
-void logPrintPrefix(Print* _logOutput, int logLevel)
-{
+void logPrintPrefix(Print* _logOutput, int logLevel) {
   logPrintSetColor(_logOutput, logLevel);
   logPrintTimestamp(_logOutput);
 }
 
-void logPrintSetColor(Print* _logOutput, int logLevel)
-{
-  switch (logLevel)
-  {
+void logPrintSetColor(Print* _logOutput, int logLevel) {
+  switch (logLevel) {
     case LOG_LEVEL_FATAL:
-      _logOutput->print("\033[31m"); // red
+      _logOutput->print("\033[31m");  // red
       break;
     case LOG_LEVEL_ERROR:
-      _logOutput->print("\033[31m"); // red
+      _logOutput->print("\033[31m");  // red
       break;
     case LOG_LEVEL_WARNING:
-      _logOutput->print("\033[33m"); // yellow
+      _logOutput->print("\033[33m");  // yellow
       break;
     case LOG_LEVEL_INFO:
-      _logOutput->print("\033[0m"); // default
+      _logOutput->print("\033[0m");  // default
       break;
     case LOG_LEVEL_TRACE:
-      _logOutput->print("\033[36m"); // cyan
+      _logOutput->print("\033[36m");  // cyan
   }
 }
 
-void logPrintTimestamp(Print* _logOutput) 
-{
-  const unsigned long MSECS_PER_SEC       = 1000;
-  const unsigned long SECS_PER_MIN        = 60;
-  const unsigned long SECS_PER_HOUR       = 3600;
-  const unsigned long SECS_PER_DAY        = 86400;
-  const unsigned long msecs               =  millis();
-  const unsigned long secs                =  msecs / MSECS_PER_SEC;
-  const unsigned long milliseconds        =  msecs % MSECS_PER_SEC;
-  const unsigned long seconds             =  secs  % SECS_PER_MIN ;
-  const unsigned long minutes             = (secs  / SECS_PER_MIN) % SECS_PER_MIN;
-  const unsigned long hours               = (secs  % SECS_PER_DAY) / SECS_PER_HOUR;
+void logPrintTimestamp(Print* _logOutput) {
+  const unsigned long MSECS_PER_SEC = 1000;
+  const unsigned long SECS_PER_MIN = 60;
+  const unsigned long SECS_PER_HOUR = 3600;
+  const unsigned long SECS_PER_DAY = 86400;
+  const unsigned long msecs = millis();
+  const unsigned long secs = msecs / MSECS_PER_SEC;
+  const unsigned long milliseconds = msecs % MSECS_PER_SEC;
+  const unsigned long seconds = secs % SECS_PER_MIN;
+  const unsigned long minutes = (secs / SECS_PER_MIN) % SECS_PER_MIN;
+  const unsigned long hours = (secs % SECS_PER_DAY) / SECS_PER_HOUR;
 
   char timestamp[20];
   sprintf(timestamp, "%02d:%02d:%02d.%03d ", hours, minutes, seconds, milliseconds);
